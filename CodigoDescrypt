@@ -1,0 +1,23 @@
+1 - substituição alfabetica
+a- z 
+b -y 
+
+2 - substiuição pelo valor número 
+
+a -1 
+b -2 
+
+3 - multiplicar cada caracter número pela sua posição 
+
+a - 26 *1
+b - 11 *2
+
+4 substitui os espaços por letras aleatórias 
+26 11
+26H11
+
+adicional 
+os espaços originais foram subistuidos por :
+as quebras de linhas originais, por @
+
+
