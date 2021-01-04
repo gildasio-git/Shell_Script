@@ -1,0 +1,22 @@
+#!/bin/bash
+# -sN -> Flag so retorna se houver resposta do IP Ativo
+# -v -> Remove a string que não deseja que seja mostrada
+
+for ip in $(nmap -sN -p 21,22,80 $(echo "$(ifconfig | grep "inet" | grep "broadcast" | cut -d" " -f10 | cut -d"." -f1-3).1/24") | grep "report for" | cut -d" " -f5); do
+  nmap -sS -F -O $ip > temp
+
+  portas="$(cat temp | grep "/tcp" | cut -d"/" -f1 | tr "\n" " ")"
+  if [ "$portas" == "" ]; then portas="Nenhuma porta aberta detectada"; fi
+
+  os="$(cat temp  | grep "OS details" | cut -d":" -f2 | cut -d" " -f2-99 | cut -d"," -f1 | grep -v "many fingerprints")"
+  if [ "$os" == "" ]; then os="Nenhum Sistema Operacional Identificado"; fi  
+
+  echo "IP Ativo: $ip | Portas: $portas | Sistema Operacional: $os"
+ done
+
+
+#[SCAN SYN EM UM DETERMINADO IP DE FORMA RÁPIDA]
+#-sS -> resposta SYN
+#-F -> Scan rápido 
+#-O -> Identificar Sistema Operacional
+# nmap -sS -F -O 192.168.1.7

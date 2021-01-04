@@ -1,0 +1,55 @@
+#!/bin/bash 
+
+#Script para quebrar senhas WIFI
+
+if [ "$1" == "" ]; then 
+	echo 
+	echo "Uso:$0 common.txt"
+exit
+fi
+
+# Comando: dos2unix common.txt (remove padrão de quebra linha padrão windws)e 
+# redireciona a o resultado para o null (buraco negbro) rs
+
+dos2unix $1 >> /dev/null
+
+for palavra in $(cat $1); do
+ #Linha criptografa as palavras padrão MD5
+  md5="$(echo -n "$palavra" | md5sum | cut -d" " -f1)"
+  
+ #Linha criptografa as palavras padrão BASE64
+  b64="$(echo -n "$palavra" | base64)" 
+
+ #Linha criptografa as palavras padrão SHA256SUM
+  sha256="$(echo -n "$palavra" | sha256sum | cut -d" " -f1)"
+     echo "$palavra:$md5:$b64:$sha256"
+
+ #Deixando a lista das palavras mais visíveis
+ # s: ->  especifica o separador(:), no caso os dois pontos.
+ # >> -> redireciona a saida do resultado para outro arquivo
+
+done >> temp$1
+
+cat temp$1 | column -s: -t >> "$1.final"
+rm temp$1
+
+
+
+
+#[ MAPEANDO PORTAS NA REDE INTERNA ] 
+
+# Comando:
+
+# "nmap -sN -p 21,22,80 192.168.0.0/24 (Varrrenda portas 21,22,80 na minha rede)
+
+# [PEGANDO IP LOCAL ]
+
+# echo "$(ifconfig | grep "inet" | grep "broadcast" | cut -d" " -f10 | cut -d"." -f1-3).1/24")
+
+# [AGREGANDO SCRIPT COM NMAP
+
+# nmap -sN -p 21,22,80 $(echo "$(ifconfig | grep "inet" | grep "broadcast" | cut-d" " -f10 | cut -d"." -f1-3).1.24") | grep "report for" | cut -d" " -f5
+
+# [USANDO FOR NO SCRIPT]
+# for ip in  $(sudo nmap -sN -p 21,22,80 $(echo "$(ifconfig | grep "inet" | grep "broadcast" | cut -d" " -f10 | cut -d"." -f1-3).1/24") | grep "report for" | cut -d" " -f5); do 
+# echo "ip: $ip"
